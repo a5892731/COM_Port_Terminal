@@ -17,13 +17,8 @@ import time
 ------------------------
 '''
 
-
-
 from system.com import SerialComPort
 import time
-
-
-
 
 #---------------------------------------------------------------<<< MAIN
 
