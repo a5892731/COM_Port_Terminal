@@ -1,6 +1,5 @@
 import serial
 import io
-import unicodedata
 from system.read_data_files import DataImport
 
 class SerialComPort:
