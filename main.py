@@ -24,7 +24,7 @@ import time
 
 if __name__ == "__main__":
 
-    com = SerialComPort("COM2")
+    com = SerialComPort()
 
     while True:
 

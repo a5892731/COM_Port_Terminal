@@ -3,13 +3,13 @@ import io
 from system.read_data_files import DataImport
 
 class SerialComPort:
-    def __init__(self, com_number = "COM2", data_file = "PORT_COM.txt"):
+    def __init__(self, data_file = "PORT_COM2.txt"):
 
         serial_parameters = DataImport(data_file, "dict")
 
         self.ser = serial.Serial()
         self.ser.baudrate = self.parameter("baudrate", "int", serial_parameters())
-        self.ser.port = com_number
+        self.ser.port = self.parameter("port", "str", serial_parameters())
         self.ser.bytesize = self.parameter("bytesize", "int", serial_parameters())
         self.ser.parity = self.parameter("parity", "str", serial_parameters())
         self.ser.stopbits = self.parameter("stopbits", "int", serial_parameters())
@@ -43,7 +43,7 @@ class SerialComPort:
     def close_port(self):
         self.serialPort.close()
 
-    def parameter(self, name, type, serial_parameters, data_file = "PORT_COM.txt"):
+    def parameter(self, name, type, serial_parameters):
 
         if type == "bool":
             if serial_parameters[name] == "False":
