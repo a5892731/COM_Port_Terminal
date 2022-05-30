@@ -2,7 +2,7 @@
 file version 1.1
 
 '''
-import os
+#import os
 
 
 class DataImport:
@@ -28,9 +28,9 @@ class DataImport:
             return None
 
     def open_file(self, FILE_ADDRESS):
-        os.chdir("data_files")
+        #os.chdir("data_files")
         self.file = open(FILE_ADDRESS, "r")
-        os.chdir("..")
+        #os.chdir("../../..")
 
     def read_list(self):
         for line in self.file:
@@ -46,7 +46,7 @@ class DataImport:
 
 if __name__ == "__main__":  # test
 
-    os.chdir("..")
+    os.chdir("../../..")
 
     data = DataImport("BOOSTERS_OBJECT_LIST.txt", "list")
     print(data())

@@ -1,5 +1,5 @@
 baudrate: 9600
-port: COM2
+port: COM1
 bytesize: 8
 parity: N
 stopbits: 1

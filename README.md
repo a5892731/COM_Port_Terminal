@@ -1,8 +1,7 @@
 # COM_Port_Terminal
 
-v 1.0
-This is a simple COM transceiver in Python.
-___________________________________________
+v 2.0
 
-Next version will support NMEA protocol
-https://pl.wikipedia.org/wiki/NMEA_0183
+This is a COM port terminal with Tkinter gui and stare machine in program loop.
+
+
