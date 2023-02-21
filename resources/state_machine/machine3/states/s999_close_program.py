@@ -1,21 +1,18 @@
-class State(object):
-    """
-    We define a state object which provides some utility functions for the
-    individual states within the state machine.
-    """
+
+
+class CloseProgramBody(object):
 
     def __init__(self):
         """
         We define a state object which provides some utility functions for the
         individual states within the state machine.
         """
-        self.next_state = self.__class__.__name__
+        self.next_state = None
+        self.info = "Close Program class called"
 
-    def run_state(self, event):
-        """
-        Handle events that are delegated to this State.
-        """
-        pass
+    def run_state(self):
+        print(self.info)
+        quit()
 
     def __repr__(self):
         """
@@ -28,3 +25,5 @@ class State(object):
         Returns the name of the State.
         """
         return self.__class__.__name__
+
+

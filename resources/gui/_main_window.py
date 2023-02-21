@@ -4,7 +4,7 @@ def build_main_window(self):
     def draw_window_attributes():
         '''gui attributes'''
         self.window.title("GUI_program_name")
-        self.window.attributes('-fullscreen', True)
+        #self.window.attributes('-fullscreen', True)
         self.window.geometry("{}x{}".format(self.window_width, self.window_height))
         #icon = PhotoImage(file = "files/icon.png")
         #self.window.resizable(width=False, height=False)
@@ -12,7 +12,7 @@ def build_main_window(self):
         self.window.config(background = "#cfd1cf") # "hex color picker" search in google
 
     def main_window_grid():
-        '''In the main window, insert the table with labels'''
+        '''In the main window, insert the table with windows'''
         def left_menu_cell():
             self.window.columnconfigure(0, minsize=100)
             self.window.rowconfigure(0, minsize=self.window_height)
@@ -30,9 +30,9 @@ def build_main_window(self):
         main_cell()
 
     def draw_default_labels():
-        '''draw default labels on program start'''
-        self.left_menu_bar()
-        self.terminal_label()
+        '''draw default windows on program start'''
+        self._left_menu_bar()
+        self._home_label()
     '''--------------------------------------------------------------------------------------------------------------'''
     draw_window_attributes()
     main_window_grid() #  <=============================================================== create here your main window shape
