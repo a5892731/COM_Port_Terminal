@@ -11,7 +11,7 @@ from resources.state_machine.machine3.states.s999_close_program import CloseProg
 
 
 class SendInitialization(SendInitializationBody):
-    def on_event(self, event, states_data):
+    def on_event(self, states_data, GUI_data):
         '''import memory from States class'''
         self = states_data.SendInitialization
 
@@ -25,7 +25,7 @@ class SendInitialization(SendInitializationBody):
             return states_data.CloseProgram
 
 class CloseProgram(CloseProgramBody):
-    def on_event(self, event, states_data):
+    def on_event(self, states_data, GUI_data):
         '''import memory from States class'''
         self = states_data.CloseProgram
         '''run your functions in this state'''
