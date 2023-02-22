@@ -65,7 +65,10 @@ import os
 def generator(open_file, endian, input_folder = "input", output_folder = "outpu_create"):
     byte_number = 0
     output = []
+    variables = []
+    data_types = []
     return_value = []
+
     file = open("{}/{}".format(input_folder, open_file), "r")
 
     comment = ''
@@ -93,16 +96,22 @@ def generator(open_file, endian, input_folder = "input", output_folder = "outpu_
             output.append("    \"\"\"")
         elif "int32_t" in line:
             variable_name = line[12::].rstrip(" {};\n")
+            variables.append(variable_name)
+            data_types.append("int()")
             output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int32_t\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
         elif "int8_t" in line:
             variable_name = line[11::].rstrip(" {};\n")
+            data_types.append("byte()")
+            variables.append(variable_name)
             output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
         elif "double" in line:
             variable_name = line[11::].rstrip(" {};\n")
+            data_types.append("int()")
+            variables.append(variable_name)
             output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"double\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
@@ -110,10 +119,10 @@ def generator(open_file, endian, input_folder = "input", output_folder = "outpu_
     output.append("")
 
 
-    output.append("    self.data = [self.FRAMES_ID[\"{0}\"], self.FRAMES_DLC[\"{0}\"],".format(frame_name))
-    for value in  return_value:
-        output.append("                 self.{},".format(value))
-    output.append("                 ]")
+    #output.append("    self.last_frame = [self.FRAMES_ID[\"{0}\"], self.FRAMES_DLC[\"{0}\"],".format(frame_name))
+    #for value in  return_value:
+    #    output.append("                 self.{},".format(value))
+    #output.append("                 ]")
 
 
 
@@ -134,6 +143,17 @@ def generator(open_file, endian, input_folder = "input", output_folder = "outpu_
     file = open(file_name, "w")
     for line in output:
         print(line, file=file)
+
+    print("---------------------------------------------------------------------------------")
+    print("Instruction to File: {}".format(file_name))
+    print(">>> add variables to your program:\n")
+
+    for i in range(len(variables)):
+        print("    self.{} = {}".format(variables[i], data_types[i]))
+
+    #print("    self.last_frame = list()")
+
+
 
 def find_input_files(adress="input"):
     os.chdir(adress)
@@ -159,6 +179,7 @@ if __name__ == "__main__":
 
     for file in files_list:
         generator(open_file=(file), endian=endian)
+
 
 
 

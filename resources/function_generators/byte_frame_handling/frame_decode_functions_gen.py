@@ -1,4 +1,45 @@
 '''
+author: a5892731
+creation date: 22.03.2023
+update date: xx.xx.xxxx
+
+description:
+this is a generator of files that contains functions that purpose are decoding data from byte stream,
+that was received via udp, com, etc.
+generator must be supported by input text file (in folder input)
+
+input text file example:
+----------------------------->>>
+struct Header
+{
+private:
+    int32_t ID {};
+    int8_t DLC {};
+    int8_t reserved0 {};
+    int8_t reserved1 {};
+    int8_t reserved2 {};
+};
+####### for a header of dataframe
+----------------------------
+enum Id: TurbidityFrame
+{
+    int32_t TurbidityGain {};
+    double TurbiditySensorVoltage {};
+    double TurbiditySensorFTU {};
+    int8_t TurbidityGainA {};
+    int8_t TurbidityGainB {};
+};
+####### for a DATA_convert functions (for the various frames depends from its header ID)
+-----------------------------<<<
+
+data stream should by construct like: HEADER+DATA
+
+
+after execution of those script, check output_create files and instructions shown in terminal window.
+'''
+
+
+'''
 this is a generator for creating functions for decoding UDP frames
 https://docs.python.org/3/library/struct.html
 Format	\	C Type	\	Python type	\	Standard size
@@ -19,10 +60,12 @@ f	\	float	\	float	\	4
 d	\	double	\	float	\	8
 '''
 
-def generator(open_file):
+import os
+
+def generator(open_file, endian, input_folder = "input", output_folder = "outpu_create"):
     byte_number = 0
     output = []
-    file = open(open_file, "r")
+    file = open(input_folder + "/" + open_file, "r")
 
     variable_list = []
 
@@ -30,85 +73,87 @@ def generator(open_file):
     for comment_line in file:
         comment += "    " + comment_line
 
-    file = open(open_file, "r")
+    file = open(input_folder + "/" + open_file, "r")
+
+
+
+
+    output.append("from resources.functions.convert_bytes_to_variable import convert_bytes_to_variable")
+    output.append("")
+
 
     for line in file:
 
 
         if "struct" in line:
             frame_name = line[6::].rstrip("\n")
-            output.append("def {}_data_decode(frame):".format(frame_name))
+            output.append("def {}_data_decode(self, frame):".format(frame_name))
             output.append("    \"\"\"")
             output.append(comment)
             output.append("    \"\"\"")
-            output.append("    data = {}")
-            output.append("    try: = {}")
-            print(frame_name)
+            #output.append("    data = {}")
+            output.append("    try:")
         elif "enum Id" in line:
             frame_name = line[9::].rstrip("\n")
-            output.append("def {}_data_decode(frame):".format(frame_name))
+            output.append("def {}_data_decode(self, frame):".format(frame_name))
             output.append("    \"\"\"")
             output.append(comment)
             output.append("    \"\"\"")
-            output.append("    data = {}")
+            #output.append("    data = {}")
             output.append("    try:")
-            print(frame_name)
         elif "int32_t" in line:
             variable_name = line[12::].rstrip(" {};\n")
-            output.append("        data[\"{}\"] = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}i\")"
+            output.append("        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}i\")"
                           .format(variable_name, byte_number, byte_number + 4, endian))
             byte_number += 4
             variable_list.append(variable_name)
-            print(variable_name)
         elif "int8_t" in line:
             variable_name = line[11::].rstrip(" {};\n")
-            output.append("        data[\"{}\"] = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"B\")"
+            output.append("        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"B\")"
                           .format(variable_name, byte_number, byte_number + 1))
             byte_number += 1
             variable_list.append(variable_name)
-            print(variable_name)
         elif "double" in line:
             variable_name = line[11::].rstrip(" {};\n")
-            output.append("        data[\"{}\"] = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}d\")"
+            output.append("        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}d\")"
                           .format(variable_name, byte_number, byte_number + 8, endian))
             byte_number += 8
             variable_list.append(variable_name)
-            print(variable_name)
     output.append("    except TypeError:")
     output.append("        print(\"{}_data_decode(frame): except TypeError: TypeError: unhashable type: 'slice'\")".
                   format(frame_name))
-    output.append("        return self.data[\"data\"]")
 
 
     output.append("")
-    for variable in variable_list:
-        output.append("    self.{} = data[\"{}\"]".format(variable, variable))
-    output.append("")
 
-    output.append("    return data")
+    #output.append("    return data")
+    #for variable in variable_list:
+    #    output.append("    self.{} = data[\"{}\"]".format(variable, variable))
+    #output.append("")
+
+    #output.append("    return data")
 
 
 
 
 
-    file = open("outpu_create.txt", "w")
 
+    file = open("{}/{}.py".format(output_folder, frame_name), "w")
 
     for line in output:
         print(line, file=file)
 
 
+def find_input_files(adress="input"):
+    os.chdir(adress)
+    for root, dirs, files in os.walk('.', topdown=False, onerror=None, followlinks=True):
+        pass
+    os.chdir("..")
+    return files
 
 if __name__ == "__main__":
 
-    '''frame shape'''
-    file1 = "header.txt"
-    file2 = "ThrusterFrame.txt"
-    file3 = "ThrusterSettings.txt"
-    file4 = "LightsSettings.txt"
-    file5 = "TurbiditySettings.txt"
-    file6 = "DigitalInputsFrame.txt"
-
+    input_data_address = "input"
 
     '''start byte number'''
     start_byte_number = 0
@@ -116,7 +161,13 @@ if __name__ == "__main__":
     endian = "<"
 
 
+
+
     """run"""
-    generator(file6)
-    print()
-    print(">>> open outpu_create.txt file")
+
+    files_list = find_input_files(adress=input_data_address)
+    print("input files: " + str(files_list))
+
+    for file in files_list:
+        generator(open_file=(file), endian=endian, input_folder = input_data_address, output_folder = "output_decode")
+
