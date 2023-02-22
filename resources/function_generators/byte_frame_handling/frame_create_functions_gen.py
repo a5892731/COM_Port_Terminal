@@ -19,7 +19,7 @@ private:
     int8_t reserved1 {};
     int8_t reserved2 {};
 };
-####### for a header functions
+####### for a header of dataframe
 ----------------------------
 enum Id: TurbidityFrame
 {
@@ -29,12 +29,13 @@ enum Id: TurbidityFrame
     int8_t TurbidityGainA {};
     int8_t TurbidityGainB {};
 };
-####### for a data functions
-
-
+####### for a DATA_convert functions (for the various frames depends from its header ID)
 -----------------------------<<<
 
-after execution of those script, check outpu_create files and instructions shown in terminal window.
+data stream should by construct like: HEADER+DATA
+
+
+after execution of those script, check output_create files and instructions shown in terminal window.
 
 '''
 
