@@ -4,11 +4,7 @@ https://gist.github.com/Karn/8fac5d8cc31a9a6b1e2bfb31e2a4267b
 '''
 from threading import Lock
 
-'''import data buffer'''
-from resources.state_machine.states_data_buffer import StatesDataBuffer
-
-
-class ReadUDPmachine(object): #in Karen project this is a SimpleDevice class
+class ReadUDPmachine(object):
     """
     A simple state machine that mimics the functionality of a device from a
     high level.

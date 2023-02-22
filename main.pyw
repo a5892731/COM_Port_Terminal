@@ -50,8 +50,8 @@ class ProgramRun:
     def main_loop(self):
 
         read_machine = ReadUDPmachine(states_data=self.states_data, gui_data=self)
-        #program_machine = ProgramMachine(states_data=self.states_data, gui_data=self)
-        #send_machine = SendUDPmachine(states_data=self.states_data, gui_data=self)
+        program_machine = ProgramMachine(states_data=self.states_data, gui_data=self)
+        send_machine = SendUDPmachine(states_data=self.states_data, gui_data=self)
 
 
         while True:
@@ -64,7 +64,7 @@ class ProgramRun:
                 target=read_machine.on_event()
             )
             threads.append(thread)
-            '''
+
             thread = Thread(
                 target=program_machine.on_event()
             )
@@ -74,7 +74,7 @@ class ProgramRun:
                 target=send_machine.on_event()
             )
             threads.append(thread)
-            '''
+
 
             '''start threads'''
             for thread in threads:
