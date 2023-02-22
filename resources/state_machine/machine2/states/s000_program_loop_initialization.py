@@ -42,7 +42,7 @@ class ProgramInitializationBody(object):
             self.thread_loop_time_ms = round((time() - self.last_loop_time)*1000, 0)
             self.last_loop_time = time()
 
-            self.send_data(GUI_data) # output stage data operations
+            self.send_data(GUI_data) # outpu_create stage data operations
 
             self.next_state = "ProgramInitialization"
 

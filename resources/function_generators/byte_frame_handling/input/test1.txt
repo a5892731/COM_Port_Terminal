@@ -1,0 +1,8 @@
+enum Id: TurbidityFrame
+{
+    int32_t TurbidityGain {};
+    double TurbiditySensorVoltage {};
+    double TurbiditySensorFTU {};
+    int8_t TurbidityGainA {};
+    int8_t TurbidityGainB {};
+};
