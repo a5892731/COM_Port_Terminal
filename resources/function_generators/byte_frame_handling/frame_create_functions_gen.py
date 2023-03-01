@@ -1,7 +1,7 @@
 '''
 author: a5892731
-creation date: 22.03.2023
-update date: xx.xx.xxxx
+creation date: 22.02.2023
+update date:  01.03.2023
 
 description:
 this is a generator of files that contains functions that purpose are coding data to byte stream,
