@@ -62,7 +62,7 @@ d	\	double	\	float	\	8
 import os
 
 
-def generator(open_file, endian, input_folder = "input", output_folder = "outpu_create"):
+def generator(open_file, endian, input_folder = "input", output_folder = "output_create"):
     byte_number = 0
     output = []
     variables = []
@@ -148,8 +148,16 @@ def generator(open_file, endian, input_folder = "input", output_folder = "outpu_
     print("Instruction to File: {}".format(file_name))
     print(">>> add variables to your program:\n")
 
-    for i in range(len(variables)):
-        print("    self.{} = {}".format(variables[i], data_types[i]))
+
+    if frame_name == "Header":
+        for i in range(len(variables)):
+            print("    {} = {}".format(variables[i], data_types[i]))
+    else:
+        for i in range(len(variables)):
+            print("    self.{} = {}".format(variables[i], data_types[i]))
+
+
+
 
     #print("    self.last_frame = list()")
 

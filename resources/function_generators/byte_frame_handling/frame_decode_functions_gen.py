@@ -68,6 +68,7 @@ def generator(open_file, endian, input_folder = "input", output_folder = "outpu_
     file = open(input_folder + "/" + open_file, "r")
 
     variable_list = []
+    data_types = []
 
     comment = ''
     for comment_line in file:
@@ -86,7 +87,7 @@ def generator(open_file, endian, input_folder = "input", output_folder = "outpu_
 
 
         if "struct" in line:
-            frame_name = line[6::].rstrip("\n")
+            frame_name = line[7::].rstrip("\n")
             output.append("def {}_data_decode(self, frame):".format(frame_name))
             output.append("    \"\"\"")
             output.append(comment)
@@ -107,18 +108,21 @@ def generator(open_file, endian, input_folder = "input", output_folder = "outpu_
                           .format(variable_name, byte_number, byte_number + 4, endian))
             byte_number += 4
             variable_list.append(variable_name)
+            data_types.append("int()")
         elif "int8_t" in line:
             variable_name = line[11::].rstrip(" {};\n")
             output.append("        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"B\")"
                           .format(variable_name, byte_number, byte_number + 1))
             byte_number += 1
             variable_list.append(variable_name)
+            data_types.append("byte()")
         elif "double" in line:
             variable_name = line[11::].rstrip(" {};\n")
             output.append("        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}d\")"
                           .format(variable_name, byte_number, byte_number + 8, endian))
             byte_number += 8
             variable_list.append(variable_name)
+            data_types.append("float()")
     output.append("    except TypeError:")
     output.append("        print(\"{}_data_decode(frame): except TypeError: TypeError: unhashable type: 'slice'\")".
                   format(frame_name))
@@ -126,22 +130,23 @@ def generator(open_file, endian, input_folder = "input", output_folder = "outpu_
 
     output.append("")
 
-    #output.append("    return data")
-    #for variable in variable_list:
-    #    output.append("    self.{} = data[\"{}\"]".format(variable, variable))
-    #output.append("")
-
-    #output.append("    return data")
-
-
-
-
-
 
     file = open("{}/{}.py".format(output_folder, frame_name), "w")
 
     for line in output:
         print(line, file=file)
+
+    print("\nInstruction to File: {}.py".format(frame_name))
+    print(">>> add variables to your program:")
+    if frame_name == "Header":
+        for i in range(len(variable_list)):
+            print("    {} = {}".format(variable_list[i], data_types[i]))
+    else:
+        for i in range(len(variable_list)):
+            print("    self.{} = {}".format(variable_list[i], data_types[i]))
+
+
+
 
 
 def find_input_files(adress="input"):
