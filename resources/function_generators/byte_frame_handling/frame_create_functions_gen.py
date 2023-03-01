@@ -138,7 +138,7 @@ def generator(open_file, endian, input_folder = "input", output_folder = "output
 
 
 
-    file_name = "{}/{}.py".format(output_folder, open_file.rstrip(".txt"))
+    file_name = "{}/{}.py".format(output_folder, frame_name)
 
     file = open(file_name, "w")
     for line in output:

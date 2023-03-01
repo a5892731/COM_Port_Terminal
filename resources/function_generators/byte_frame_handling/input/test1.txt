@@ -1,8 +1,8 @@
-enum Id: TurbidityFrame
+enum Id: TestFrameData
 {
-    int32_t TurbidityGain {};
-    double TurbiditySensorVoltage {};
-    double TurbiditySensorFTU {};
-    int8_t TurbidityGainA {};
-    int8_t TurbidityGainB {};
+    int32_t variable1 {};
+    double variable2 {};
+    double variable3 {};
+    int8_t variable4 {};
+    int8_t variable5 {};
 };
