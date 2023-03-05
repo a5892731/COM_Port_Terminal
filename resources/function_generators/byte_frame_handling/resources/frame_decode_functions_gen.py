@@ -137,7 +137,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
     for line in output:
         print(line, file=file)
 
-    return frame_name, variable_list, data_types
+    return frame_name, variable_list, data_types, byte_number
 
 
 

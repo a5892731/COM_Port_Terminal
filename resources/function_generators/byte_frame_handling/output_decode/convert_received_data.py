@@ -1,11 +1,11 @@
 from threading import Lock
 
-'''Header function'''
-from resources.function_generators.byte_frame_handling.output_decode.Header import Header_data_decode
+"""Header function"""
+from resources.function_generators.byte_frame_handling.output_decode.decode_frame_files.Header import Header_data_decode
 
-'''Data convert functions'''
-from resources.function_generators.byte_frame_handling.output_decode.TestFrameData import TestFrameData_data_decode
-from resources.function_generators.byte_frame_handling.output_decode.TestFrameData2 import TestFrameData2_data_decode
+"""Data convert functions"""
+from resources.function_generators.byte_frame_handling.output_decode.decode_frame_files.TestFrameData import TestFrameData_data_decode
+from resources.function_generators.byte_frame_handling.output_decode.decode_frame_files.TestFrameData2 import TestFrameData2_data_decode
 
 class ConvertReceivedDataBody():
     """
@@ -16,10 +16,10 @@ class ConvertReceivedDataBody():
     def __init__(self):
         self.next_state = self.__class__.__name__
         self.lock = Lock() # threading Lock mechanism
-        '''
+        """
         self.lock.acquire() # lock before read/save data
-        self.lock.release() # unlock
-        '''
+        self.lock.release() # unlock.
+        """
 
         self.init_identification_frame_numbers()
         self.init_header_variables()
@@ -27,12 +27,12 @@ class ConvertReceivedDataBody():
 
     def init_identification_frame_numbers(self):
         self.FRAMES_ID = {
-                         "TestFrameData": 100,
-                         "TestFrameData2": 101,
+                          "TestFrameData": 100,
+                          "TestFrameData2": 101,
                          }
         self.FRAMES_DLC = {
-                          "TestFrameData": 22,
-                          "TestFrameData2": 13,
+                           "TestFrameData": 22,
+                           "TestFrameData2": 13,
                           }
 
     def init_system_variables(self):
@@ -46,13 +46,13 @@ class ConvertReceivedDataBody():
         self.reserved2 = int()
 
     def init_received_variables(self):
-        #TestFrameData
+        #TestFrameData variables
         self.variable1 = int()
         self.variable2 = float()
         self.variable3 = float()
         self.variable4 = int()
         self.variable5 = int()
-        #TestFrameData2
+        #TestFrameData2 variables
         self.variable6 = int()
         self.variable7 = float()
         self.variable8 = int()
@@ -60,14 +60,6 @@ class ConvertReceivedDataBody():
     def identify_frames(self, frame):
         self.Header_data_decode(frame)
         return frame[8:]
-
-    def decoding_data_in_frame(self, frame_data):
-        if self.ID == self.FRAMES_ID["TestFrameData"]:
-            self.TestFrameData_data_decode(frame_data)
-        elif self.ID == self.FRAMES_ID["TestFrameData2"]:
-             self.TestFrameData2_data_decode(frame_data)
-        else:
-            print(">>> error: unknown frame ID")
 
     def get_data(self, states_data):
         self.lock.acquire() # lock before read/save data
@@ -79,7 +71,15 @@ class ConvertReceivedDataBody():
         states_data.ConvertReceivedData = self
         self.lock.release()  # unlock
 
-    def run_state(self, states_data):
+    def decoding_data_in_frame(self, frame_data):
+        if self.ID == self.FRAMES_ID["TestFrameData"]:
+            self.TestFrameData_data_decode(frame_data)
+        elif self.ID == self.FRAMES_ID["TestFrameData2"]:
+            self.TestFrameData2_data_decode(frame_data)
+        else:
+            print(">>> error: unknown frame ID")
+
+    def run_state(self,  states_data, GUI_data):
         """
         Handle events that are delegated to this State.
         """

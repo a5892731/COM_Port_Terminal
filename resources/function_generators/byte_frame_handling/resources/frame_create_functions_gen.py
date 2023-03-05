@@ -149,7 +149,7 @@ def frame_create_functions_gen(open_file, endian, input_folder = "input_frames",
         print(line, file=file)
 
 
-    return frame_name, variable_list, data_types
+    return frame_name, variable_list, data_types, None
 
 
 def find_input_files(adress="input_frames"):
