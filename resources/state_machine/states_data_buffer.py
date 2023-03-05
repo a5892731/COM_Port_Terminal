@@ -23,3 +23,17 @@ class StatesDataBuffer():
 
         '''    machine 3'''
         self.SendInitialization = SendInitialization()
+
+        '''Header'''
+        self.ID = int()
+        self.DLC = int()
+        self.reserved0 = int()
+        self.reserved1 = int()
+        self.reserved2 = int()
+
+        """Data"""
+        self.variable1 = int()
+        self.variable2 = float()
+        self.variable3 = float()
+        self.variable4 = int()
+        self.variable5 = int()

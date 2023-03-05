@@ -6,9 +6,9 @@ update date:  01.03.2023
 description:
 this is a generator of files that contains functions that purpose are decoding data from byte stream,
 that was received via udp, com, etc.
-generator must be supported by input text file (in folder input)
+generator must be supported by input_frames text file (in folder input_frames)
 
-input text file example:
+input_frames text file example:
 ----------------------------->>>
 struct Header
 {
@@ -62,7 +62,7 @@ d	\	double	\	float	\	8
 
 import os
 
-def generator(open_file, endian, input_folder = "input", output_folder = "outpu_create"):
+def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames", output_folder = "outpu_create"):
     byte_number = 0
     output = []
     file = open(input_folder + "/" + open_file, "r")
@@ -105,7 +105,7 @@ def generator(open_file, endian, input_folder = "input", output_folder = "outpu_
         elif "int32_t" in line:
             variable_name = line[12::].rstrip(" {};\n")
             output.append("        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}i\")"
-                          .format(variable_name, byte_number, byte_number + 4, endian))
+                          .format(variable_name, byte_number, byte_number + 4, endian_translate(endian)))
             byte_number += 4
             variable_list.append(variable_name)
             data_types.append("int()")
@@ -115,11 +115,11 @@ def generator(open_file, endian, input_folder = "input", output_folder = "outpu_
                           .format(variable_name, byte_number, byte_number + 1))
             byte_number += 1
             variable_list.append(variable_name)
-            data_types.append("byte()")
+            data_types.append("int()")
         elif "double" in line:
             variable_name = line[11::].rstrip(" {};\n")
             output.append("        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}d\")"
-                          .format(variable_name, byte_number, byte_number + 8, endian))
+                          .format(variable_name, byte_number, byte_number + 8, endian_translate(endian)))
             byte_number += 8
             variable_list.append(variable_name)
             data_types.append("float()")
@@ -133,6 +133,7 @@ def generator(open_file, endian, input_folder = "input", output_folder = "outpu_
 
     file = open("{}/{}.py".format(output_folder, frame_name), "w")
 
+    '''
     for line in output:
         print(line, file=file)
 
@@ -145,20 +146,29 @@ def generator(open_file, endian, input_folder = "input", output_folder = "outpu_
         for i in range(len(variable_list)):
             print("    self.{} = {}".format(variable_list[i], data_types[i]))
 
+    '''
 
 
 
-
-def find_input_files(adress="input"):
+def find_input_files(adress="input_frames"):
     os.chdir(adress)
-    for root, dirs, files in os.walk('.', topdown=False, onerror=None, followlinks=True):
+    for root, dirs, files in os.walk('..', topdown=False, onerror=None, followlinks=True):
         pass
-    os.chdir("..")
+    os.chdir("../..")
     return files
+
+def endian_translate(endian):
+    if endian == "little":
+        return "<"
+    elif endian == "big":
+        return ">"
+    else:
+        return endian
 
 if __name__ == "__main__":
 
-    input_data_address = "input"
+    os.chdir("..")
+    input_data_address = "input_frames"
 
     '''start byte number'''
     start_byte_number = 0
@@ -171,8 +181,8 @@ if __name__ == "__main__":
     """run"""
 
     files_list = find_input_files(adress=input_data_address)
-    print("input files: " + str(files_list))
+    print("input_frames files: " + str(files_list))
 
     for file in files_list:
-        generator(open_file=(file), endian=endian, input_folder = input_data_address, output_folder = "output_decode")
+        frame_decode_functions_gen(open_file=(file), endian=endian, input_folder = input_data_address, output_folder = "output_decode")
 

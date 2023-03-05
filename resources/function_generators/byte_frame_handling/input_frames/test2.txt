@@ -1,0 +1,6 @@
+enum Id: TestFrameData2
+{
+    int32_t variable6 {};
+    double variable7 {};
+    int8_t variable8 {};
+};

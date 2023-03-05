@@ -6,9 +6,9 @@ update date:  01.03.2023
 description:
 this is a generator of files that contains functions that purpose are coding data to byte stream,
 that can be sent via udp, com, etc.
-generator mus be supported by input text file (in folder input)
+generator mus be supported by input_frames text file (in folder input_frames)
 
-input text file example:
+input_frames text file example:
 ----------------------------->>>
 struct Header
 {
@@ -62,7 +62,7 @@ d	\	double	\	float	\	8
 import os
 
 
-def generator(open_file, endian, input_folder = "input", output_folder = "output_create"):
+def frame_create_functions_gen(open_file, endian, input_folder = "input_frames", output_folder = "output_create"):
     byte_number = 0
     output = []
     variables = []
@@ -103,14 +103,14 @@ def generator(open_file, endian, input_folder = "input", output_folder = "output
             return_value.append(variable_name)
         elif "int8_t" in line:
             variable_name = line[11::].rstrip(" {};\n")
-            data_types.append("byte()")
+            data_types.append("int()")
             variables.append(variable_name)
             output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
         elif "double" in line:
             variable_name = line[11::].rstrip(" {};\n")
-            data_types.append("int()")
+            data_types.append("float()")
             variables.append(variable_name)
             output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"double\", endian=endian)".
                           format(variable_name, ))
@@ -140,7 +140,11 @@ def generator(open_file, endian, input_folder = "input", output_folder = "output
 
     file_name = "{}/{}.py".format(output_folder, frame_name)
 
+
     file = open(file_name, "w")
+
+
+    '''
     for line in output:
         print(line, file=file)
 
@@ -155,24 +159,21 @@ def generator(open_file, endian, input_folder = "input", output_folder = "output
     else:
         for i in range(len(variables)):
             print("    self.{} = {}".format(variables[i], data_types[i]))
+    '''
 
 
 
-
-    #print("    self.last_frame = list()")
-
-
-
-def find_input_files(adress="input"):
+def find_input_files(adress="input_frames"):
     os.chdir(adress)
-    for root, dirs, files in os.walk('.', topdown=False, onerror=None, followlinks=True):
+    for root, dirs, files in os.walk('..', topdown=False, onerror=None, followlinks=True):
         pass
-    os.chdir("..")
+    os.chdir("../..")
     return files
 
 #-----------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
-    input_data_address = "input"
+    os.chdir("..")
+    input_data_address = "input_frames"
 
     '''start byte number'''
     start_byte_number = 0
@@ -183,10 +184,10 @@ if __name__ == "__main__":
     """run"""
 
     files_list = find_input_files(adress=input_data_address)
-    print("input files: " + str(files_list))
+    print("input_frames files: " + str(files_list))
 
     for file in files_list:
-        generator(open_file=(file), endian=endian)
+        frame_create_functions_gen(open_file=(file), endian=endian)
 
 
 
