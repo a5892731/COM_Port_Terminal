@@ -133,20 +133,11 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
 
     file = open("{}/{}.py".format(output_folder, frame_name), "w")
 
-    '''
+
     for line in output:
         print(line, file=file)
 
-    print("\nInstruction to File: {}.py".format(frame_name))
-    print(">>> add variables to your program:")
-    if frame_name == "Header":
-        for i in range(len(variable_list)):
-            print("    {} = {}".format(variable_list[i], data_types[i]))
-    else:
-        for i in range(len(variable_list)):
-            print("    self.{} = {}".format(variable_list[i], data_types[i]))
-
-    '''
+    return frame_name, variable_list, data_types
 
 
 

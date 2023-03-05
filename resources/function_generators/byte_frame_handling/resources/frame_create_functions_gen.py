@@ -65,7 +65,7 @@ import os
 def frame_create_functions_gen(open_file, endian, input_folder = "input_frames", output_folder = "output_create"):
     byte_number = 0
     output = []
-    variables = []
+    variable_list = []
     data_types = []
     return_value = []
 
@@ -96,7 +96,7 @@ def frame_create_functions_gen(open_file, endian, input_folder = "input_frames",
             output.append("    \"\"\"")
         elif "int32_t" in line:
             variable_name = line[12::].rstrip(" {};\n")
-            variables.append(variable_name)
+            variable_list.append(variable_name)
             data_types.append("int()")
             output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int32_t\", endian=endian)".
                           format(variable_name, ))
@@ -104,19 +104,20 @@ def frame_create_functions_gen(open_file, endian, input_folder = "input_frames",
         elif "int8_t" in line:
             variable_name = line[11::].rstrip(" {};\n")
             data_types.append("int()")
-            variables.append(variable_name)
+            variable_list.append(variable_name)
             output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
         elif "double" in line:
             variable_name = line[11::].rstrip(" {};\n")
             data_types.append("float()")
-            variables.append(variable_name)
+            variable_list.append(variable_name)
             output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"double\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
 
     output.append("")
+
 
 
     #output.append("    self.last_frame = [self.FRAMES_ID[\"{0}\"], self.FRAMES_DLC[\"{0}\"],".format(frame_name))
@@ -138,29 +139,17 @@ def frame_create_functions_gen(open_file, endian, input_folder = "input_frames",
 
 
 
-    file_name = "{}/{}.py".format(output_folder, frame_name)
 
+
+    file_name = "{}/{}.py".format(output_folder, frame_name)
 
     file = open(file_name, "w")
 
-
-    '''
     for line in output:
         print(line, file=file)
 
-    print("---------------------------------------------------------------------------------")
-    print("Instruction to File: {}".format(file_name))
-    print(">>> add variables to your program:\n")
 
-
-    if frame_name == "Header":
-        for i in range(len(variables)):
-            print("    {} = {}".format(variables[i], data_types[i]))
-    else:
-        for i in range(len(variables)):
-            print("    self.{} = {}".format(variables[i], data_types[i]))
-    '''
-
+    return frame_name, variable_list, data_types
 
 
 def find_input_files(adress="input_frames"):
@@ -169,6 +158,9 @@ def find_input_files(adress="input_frames"):
         pass
     os.chdir("../..")
     return files
+
+
+
 
 #-----------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
