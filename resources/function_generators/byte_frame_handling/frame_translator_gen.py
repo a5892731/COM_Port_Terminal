@@ -41,7 +41,7 @@ class FrameHandlerFunctionsGenerator():
         self.endian = "little"
 
     def convert_received_data_text_data_init(self):
-        self.import_folder_address = "resources.function_generators.byte_frame_handling.output_decode.TestFrameData"
+        self.import_folder_address = "resources.function_generators.byte_frame_handling.output_decode"
         self.create_class_name = "ConvertReceivedDataBody"
         self.next_state_name = "StoreData"
         self.data_buffer_bytes_source = "states_data.UdpRead.data_buffer"
@@ -93,18 +93,45 @@ class FrameHandlerFunctionsGenerator():
 
 
     def main_decode_function_gen(self):
+        self.content_of_convert_received_data_file = \
+            "from threading import Lock\n"+ \
+            "\n" + \
+            "\"\"\"Header function\"\"\"\n"+ \
+            "from {}.Header import Header_data_decode".format(self.import_folder_address) + \
+            "\n\n" + \
+             "\"\"\"Data convert functions\"\"\"\n"
+
+        for name in self.frame_name_list:
+            if "Header" not in name:
+                string = "from {0}.{1} import {1}_data_decode\n".format(self.import_folder_address, name)
+                self.content_of_convert_received_data_file += string
+
+        self.content_of_convert_received_data_file += \
+            "\n" + \
+            "class {}():\n".format(self.create_class_name) + \
+            "    \"\"\"\n"+ \
+            "    We define a state object which provides some utility functions for the\n" + \
+            "    individual states within the state machine.\n" + \
+            "    \"\"\"\n\n" + \
+            "    def __init__(self):\n" + \
+            "        self.next_state = self.__class__.__name__\n" + \
+            "        self.lock = Lock() # threading Lock mechanism\n"  + \
+            "        \"\"\"\n" + \
+            "        self.lock.acquire() # lock before read/save data\n" + \
+            "        self.lock.release() # unlock.\n" + \
+            "        \"\"\"\n\n" + \
+            ""
 
 
-
-        self.content_of_convert_received_data_file = ""
-
+        file = open("test_file.py", "w")
+        print(self.content_of_convert_received_data_file, file = file)
 if __name__ == "__main__":
 
     g = FrameHandlerFunctionsGenerator()
 
     '''check correction of input files'''
-    g.first_input_check()
+    #g.first_input_check()
     g.frame_data_files_gen()
+    #g.second_input_check()
     g.main_decode_function_gen()
-    g.second_input_check()
 
