@@ -42,21 +42,21 @@ after execution of those script, check output_create files and instructions show
 '''
 https://docs.python.org/3/library/struct.html
 Format	\	C Type	\	Python type	\	Standard size
-c	\	char	\	bytes of length 1	\	1
-b	\	signed char	\	integer	\	1
-B	\	unsigned char	\	integer	\	1
-?	\	_Bool	\	bool	\	1
-h	\	short	\	integer	\	2
-H	\	unsigned short	\	integer	\	2
-i	\	int	\	integer	\	4
-I	\	unsigned int	\	integer	\	4
-l	\	long	\	integer	\	4
-L	\	unsigned long	\	integer	\	4
-q	\	long long	\	integer	\	8
-Q	\	unsigned long long	\	integer	\	8
-e	\	-6	\	float	\	2
-f	\	float	\	float	\	4
-d	\	double	\	float	\	8
+c	\	char	\	bytes of length 1	\	1       >>>>>>>>>>>>>>>>> char
+b	\	signed char	\	integer	\	1               >>>>>>>>>>>>>>>>> int8
+B	\	unsigned char	\	integer	\	1           >>>>>>>>>>>>>>>>> int8_t
+?	\	_Bool	\	bool	\	1                   >>>>>>>>>>>>>>>>> bool
+h	\	short	\	integer	\	2                   >>>>>>>>>>>>>>>>> int16
+H	\	unsigned short	\	integer	\	2           >>>>>>>>>>>>>>>>> int16_t
+i	\	int	\	integer	\	4                       >>>>>>>>>>>>>>>>> int32
+I	\	unsigned int	\	integer	\	4           >>>>>>>>>>>>>>>>> int32_t
+l	\	long	\	integer	\	4                   >>>>>>>>>>>>>>>>>
+L	\	unsigned long	\	integer	\	4           >>>>>>>>>>>>>>>>>
+q	\	long long	\	integer	\	8               >>>>>>>>>>>>>>>>> int64
+Q	\	unsigned long long	\	integer	\	8       >>>>>>>>>>>>>>>>> int64_t
+e	\	-6	\	float	\	2                       >>>>>>>>>>>>>>>>>
+f	\	float	\	float	\	4                   >>>>>>>>>>>>>>>>> float
+d	\	double	\	float	\	8                   >>>>>>>>>>>>>>>>> double
 '''
 
 import os
@@ -94,11 +94,21 @@ def frame_create_functions_gen(open_file, endian, input_folder = "input_frames",
             output.append("    \"\"\"")
             output.append(comment)
             output.append("    \"\"\"")
-        elif "int32_t" in line:
-            variable_name = line[12::].rstrip(" {};\n")
+
+
+
+        elif "char" in line:
+            variable_name = line[9::].rstrip(" {};\n")
+            data_types.append("str()")
             variable_list.append(variable_name)
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
+                          format(variable_name, ))
+            return_value.append(variable_name)
+        elif "int8" in line:
+            variable_name = line[9::].rstrip(" {};\n")
             data_types.append("int()")
-            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int32_t\", endian=endian)".
+            variable_list.append(variable_name)
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
         elif "int8_t" in line:
@@ -108,6 +118,41 @@ def frame_create_functions_gen(open_file, endian, input_folder = "input_frames",
             output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
+        elif "int16" in line:
+            variable_name = line[10::].rstrip(" {};\n")
+            data_types.append("int()")
+            variable_list.append(variable_name)
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
+                          format(variable_name, ))
+            return_value.append(variable_name)
+        elif "int16_t" in line:
+            variable_name = line[12::].rstrip(" {};\n")
+            data_types.append("int()")
+            variable_list.append(variable_name)
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
+                          format(variable_name, ))
+            return_value.append(variable_name)
+        elif "int32" in line:
+            variable_name = line[10::].rstrip(" {};\n")
+            data_types.append("int()")
+            variable_list.append(variable_name)
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
+                          format(variable_name, ))
+            return_value.append(variable_name)
+        elif "int32_t" in line:
+            variable_name = line[12::].rstrip(" {};\n")
+            variable_list.append(variable_name)
+            data_types.append("int()")
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int32_t\", endian=endian)".
+                          format(variable_name, ))
+            return_value.append(variable_name)
+        elif "float" in line:
+            variable_name = line[10::].rstrip(" {};\n")
+            data_types.append("float()")
+            variable_list.append(variable_name)
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"double\", endian=endian)".
+                          format(variable_name, ))
+            return_value.append(variable_name)
         elif "double" in line:
             variable_name = line[11::].rstrip(" {};\n")
             data_types.append("float()")
@@ -115,6 +160,21 @@ def frame_create_functions_gen(open_file, endian, input_folder = "input_frames",
             output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"double\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
+        elif "int64" in line:
+            variable_name = line[10::].rstrip(" {};\n")
+            variable_list.append(variable_name)
+            data_types.append("int()")
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int32_t\", endian=endian)".
+                          format(variable_name, ))
+            return_value.append(variable_name)
+        elif "int64_t" in line:
+            variable_name = line[12::].rstrip(" {};\n")
+            variable_list.append(variable_name)
+            data_types.append("int()")
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int32_t\", endian=endian)".
+                          format(variable_name, ))
+            return_value.append(variable_name)
+
 
     output.append("")
 
@@ -137,10 +197,6 @@ def frame_create_functions_gen(open_file, endian, input_folder = "input_frames",
     output.append("    " + return_value)
     output.append("    " + "return " + frame_name)
 
-
-
-
-
     file_name = "{}/{}.py".format(output_folder, frame_name)
 
     file = open(file_name, "w")
@@ -160,8 +216,6 @@ def find_input_files(adress="input_frames"):
     return files
 
 
-
-
 #-----------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     os.chdir("..")
@@ -171,7 +225,6 @@ if __name__ == "__main__":
     start_byte_number = 0
     '''endian   < = little ; > = big'''
     endian = "little"
-
 
     """run"""
 
