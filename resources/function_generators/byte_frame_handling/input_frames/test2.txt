@@ -2,5 +2,5 @@ enum Id: TestFrameData2
 {
     int16_t variable6 {};
     int16 variable7 {};
-    int8_t variable8 {};
+    double variable8 {};
 };

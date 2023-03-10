@@ -32,7 +32,7 @@ class ConvertReceivedDataBody():
                          }
         self.FRAMES_DLC = {
                            "TestFrameData": 14,
-                           "TestFrameData2": 5,
+                           "TestFrameData2": 12,
                           }
 
     def init_system_variables(self):
@@ -52,7 +52,7 @@ class ConvertReceivedDataBody():
         #TestFrameData2 variables
         self.variable6 = int()
         self.variable7 = int()
-        self.variable8 = int()
+        self.variable8 = float()
 
     def identify_frames(self, frame):
         self.Header_data_decode(frame)
@@ -65,7 +65,7 @@ class ConvertReceivedDataBody():
 
     def store_data(self, states_data):
         self.lock.acquire()  # lock before read/save data
-        states_data.ConvertReceivedData = self
+        #states_data.ConvertReceivedData = self
         self.lock.release()  # unlock
 
     def decoding_data_in_frame(self, frame_data):

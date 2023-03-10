@@ -63,7 +63,7 @@ class FrameHandlerFunctionsGenerator():
         self.import_folder_address = "resources.function_generators.byte_frame_handling.output_create.code_frame_files"
         self.create_class_name = "PrepareDataToSendBody"
         self.next_state_name = "StoreSendData"
-        self.data_storage_class = "states_data" + "."
+        self.data_storage_class = "states_data"
         self.store_self_source = "states_data.PrepareDataToSend"
 
         self.convert_send_data_file_name = "prepare_data_to_send.py"
@@ -223,9 +223,10 @@ class FrameHandlerFunctionsGenerator():
             self.content_of_convert_received_data_file += \
                 "    def store_data(self, states_data):" + "\n" + \
                 "        self.lock.acquire()  # lock before read/save data" + "\n" + \
-                "        states_data.ConvertReceivedData = self" + "\n" + \
+                "        #states_data.{} = self\n".format(self.create_class_name.rstrip("ody").rstrip("B")) + \
                 "        self.lock.release()  # unlock" + "\n" + \
                 "" + "\n"
+
         def create_decoding_data_in_frame_function():
             self.content_of_convert_received_data_file += \
                 "    def decoding_data_in_frame(self, frame_data):" + "\n"
@@ -264,6 +265,10 @@ class FrameHandlerFunctionsGenerator():
                 "" + "\n" + \
                 "        self.next_state = \"{}\"".format(self.next_state_name)
 
+
+
+
+
         self.convert_received_data_configuration() # get configuration
 
         create_class()
@@ -277,8 +282,6 @@ class FrameHandlerFunctionsGenerator():
         create_store_data_function()
         create_decoding_data_in_frame_function()
         create_run_state_function()
-
-
 
         file = open(self.convert_received_data_storage_folder + self.convert_received_data_file_name, "w")
         print(self.content_of_convert_received_data_file, file = file)
@@ -317,6 +320,7 @@ class FrameHandlerFunctionsGenerator():
                 "        self.lock.release() # unlock.\n" + \
                 "        \"\"\"\n\n" + \
                 "        self.init_identification_frame_numbers()\n" + \
+                "        self.init_header_variables()\n" + \
                 "        self.init_send_variables()\n" + \
                 "        self.init_system_variables()" + "\n" + \
                 "" + "\n"
@@ -344,6 +348,90 @@ class FrameHandlerFunctionsGenerator():
                     "                          }" + "\n" + \
                     "" + "\n"
 
+        def create_init_header_variables_function():
+            self.content_of_convert_send_data_file += \
+                    "    def init_header_variables(self):" + "\n"
+
+            for i in range(len(self.frame_name_list)):
+                if "Header" in self.frame_name_list[i]:
+                    for ii in range(len(self.variables[i])):
+                        self.content_of_convert_send_data_file += \
+                        "        self.{} = {}\n".format(self.variables[i][ii], self.data_types[i][ii])
+
+            self.content_of_convert_send_data_file += "\n"
+
+        def create_init_received_variables_function():
+            self.content_of_convert_send_data_file += \
+                "    def init_send_variables(self):" + "\n"
+
+            for i in range(len(self.frame_name_list)):
+                if "Header" not in self.frame_name_list[i]:
+                    self.content_of_convert_send_data_file += \
+                    "        #{} variables\n".format(self.frame_name_list[i])
+                    for ii in range(len(self.variables[i])):
+                        self.content_of_convert_send_data_file += \
+                        "        self.{} = {}\n".format(self.variables[i][ii], self.data_types[i][ii])
+
+            self.content_of_convert_send_data_file += "\n"
+
+        def create_init_system_variables_function():
+
+            self.content_of_convert_send_data_file += \
+                "    def init_system_variables(self):" + "\n" + \
+                    "        self.messages = list()" + "\n" + \
+                    "" + "\n"
+
+            for frame in self.frame_name_list:
+                if "Header" not in frame:
+                    self.content_of_convert_send_data_file += \
+                    "        self.{}SendOrd = False\n".format(frame)
+
+            self.content_of_convert_send_data_file += "\n"
+
+        def create_get_data():
+            self.content_of_convert_send_data_file += \
+                "    def get_data(self,  states_data, GUI_data):" + "\n" + \
+                "        self.lock.acquire()  # lock before read/save data" + "\n"
+
+
+            for i in range(len(self.frame_name_list)):
+                if "Header" not in self.frame_name_list[i]:
+                    self.content_of_convert_send_data_file += \
+                    "        #{}\n".format(self.frame_name_list[i])
+                    for ii in range(len(self.variables[i])):
+                        self.content_of_convert_send_data_file += \
+                        "        self.{0} = {1}.{0}\n".format(self.variables[i][ii], self.data_storage_class)
+
+            self.content_of_convert_send_data_file += "\n        #send orders\n"
+
+            for neme in self.frame_name_list:
+                if "Header" not in neme:
+                    self.content_of_convert_send_data_file += \
+                        "        self.{0}SendOrd = {1}.{0}SendOrd\n".format(neme, self.data_storage_class)
+
+            self.content_of_convert_send_data_file += \
+                "\n        self.lock.release()  # unlock" + "\n"
+
+        def create_store_data_function():
+            self.content_of_convert_send_data_file += \
+                "    def store_data(self, states_data):" + "\n" + \
+                "        self.lock.acquire()  # lock before read/save data" + "\n" + \
+                "        #states_data.{} = self\n".format(self.create_class_name.rstrip("ody").rstrip("B") ) + \
+                "        self.lock.release()  # unlock" + "\n" + \
+                "" + "\n" + "        \"\"\"system\"\"\"" + "\n"
+
+            for neme in self.frame_name_list:
+                if "Header" not in neme:
+                    self.content_of_convert_send_data_file += \
+                        "        states_data.{0}SendOrd = self.{0}SendOrd\n".format(neme)
+
+            self.content_of_convert_send_data_file += "\n"
+
+        def create_build_frames():
+            self.content_of_convert_send_data_file += \
+                "    def build_frames(self, ID):" + "\n" + \
+                "       \'\'\'byte frame = Header + data\'\'\'"
+
 
 
         self.convert_data_to_send_configuration() # get configuration
@@ -351,6 +439,12 @@ class FrameHandlerFunctionsGenerator():
         create_class()
         create_init_function()
         create_init_identification_frame_numbers_function()
+        create_init_header_variables_function()
+        create_init_received_variables_function()
+        create_init_system_variables_function()
+        create_get_data()
+        create_store_data_function()
+        create_build_frames()
 
         self.prepare_data_to_send_files_storage_folder = "output_create/code_frame_files/" # to delete
         self.prepare_data_to_send_storage_folder = "output_create/" # to delete

@@ -22,6 +22,7 @@ class PrepareDataToSendBody():
         """
 
         self.init_identification_frame_numbers()
+        self.init_header_variables()
         self.init_send_variables()
         self.init_system_variables()
 
@@ -32,7 +33,57 @@ class PrepareDataToSendBody():
                          }
         self.FRAMES_DLC = {
                            "TestFrameData": 14,
-                           "TestFrameData2": 5,
+                           "TestFrameData2": 12,
                           }
 
+    def init_header_variables(self):
+        self.ID = int()
+        self.DLC = int()
 
+    def init_send_variables(self):
+        #TestFrameData variables
+        self.variable1 = int()
+        self.variable2 = int()
+        self.variable3 = float()
+        self.variable4 = int()
+        self.variable5 = int()
+        #TestFrameData2 variables
+        self.variable6 = int()
+        self.variable7 = int()
+        self.variable8 = float()
+
+    def init_system_variables(self):
+        self.messages = list()
+
+        self.TestFrameDataSendOrd = False
+        self.TestFrameData2SendOrd = False
+
+    def get_data(self,  states_data, GUI_data):
+        self.lock.acquire()  # lock before read/save data
+        #TestFrameData
+        self.variable1 = states_data.variable1
+        self.variable2 = states_data.variable2
+        self.variable3 = states_data.variable3
+        self.variable4 = states_data.variable4
+        self.variable5 = states_data.variable5
+        #TestFrameData2
+        self.variable6 = states_data.variable6
+        self.variable7 = states_data.variable7
+        self.variable8 = states_data.variable8
+
+        #send orders
+        self.TestFrameDataSendOrd = states_data.TestFrameDataSendOrd
+        self.TestFrameData2SendOrd = states_data.TestFrameData2SendOrd
+
+        self.lock.release()  # unlock
+    def store_data(self, states_data):
+        self.lock.acquire()  # lock before read/save data
+        #states_data.PrepareDataToSend = self
+        self.lock.release()  # unlock
+
+        """system"""
+        states_data.TestFrameDataSendOrd = self.TestFrameDataSendOrd
+        states_data.TestFrameData2SendOrd = self.TestFrameData2SendOrd
+
+    def build_frames(self, ID):
+       '''byte frame = Header + data'''
