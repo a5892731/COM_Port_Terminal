@@ -18,9 +18,7 @@ class FrameHandlerFunctionsGenerator():
         """find input files"""
         self.find_input_files(adress=self.input_data_address)
 
-        """configuration"""
-        self.convert_received_data_configuration()
-        self.prepare_data_to_send_configuration()
+
 
     def get_frame_IDs(self):
         """should be in text file in future"""
@@ -29,6 +27,7 @@ class FrameHandlerFunctionsGenerator():
             "TestFrameData": 100,
             "TestFrameData2": 101,
             }
+
     def init_program_variables(self):
         self.frame_name_list = list() #list of frame names
         self.variables = list() # list of lists that contains variables per frame name
@@ -38,6 +37,14 @@ class FrameHandlerFunctionsGenerator():
 
     def define_file_addresses(self):
         self.input_data_address = "input_frames"
+
+        self.convert_received_files_storage_folder = "output_decode/decode_frame_files/"
+        self.convert_received_data_storage_folder = "output_decode/"
+
+        self.prepare_data_to_send_files_storage_folder = "output_create/code_frame_files/"
+        self.prepare_data_to_send_storage_folder = "output_create/"
+
+
     def conversion_options(self):
         '''endian   < = little ; > = big'''
         self.endian = "little"
@@ -49,16 +56,19 @@ class FrameHandlerFunctionsGenerator():
         self.data_buffer_bytes_source = "states_data.UdpRead.data_buffer"
         self.store_self_source = "states_data.ConvertReceivedData"
 
-
-        self.convert_received_files_storage_folder = "output_decode/decode_frame_files/"
-        self.convert_received_data_storage_folder = "output_decode/"
-
         self.convert_received_data_file_name = "convert_received_data.py"
         self.content_of_convert_received_data_file = ""
 
-    def prepare_data_to_send_configuration(self):
-        self.prepare_data_to_send_files_storage_folder = "output_create/code_frame_files/"
-        self.prepare_data_to_send_storage_folder = "output_create/"
+    def convert_data_to_send_configuration(self):
+        self.import_folder_address = "resources.function_generators.byte_frame_handling.output_create.code_frame_files"
+        self.create_class_name = "PrepareDataToSendBody"
+        self.next_state_name = "StoreSendData"
+        self.data_storage_class = "states_data" + "."
+        self.store_self_source = "states_data.PrepareDataToSend"
+
+        self.convert_send_data_file_name = "prepare_data_to_send.py"
+        self.content_of_convert_send_data_file = ""
+
 
     def first_input_check(self):
         print(">>>       {}".format(self.files))
@@ -97,7 +107,6 @@ class FrameHandlerFunctionsGenerator():
             self.variables.append(variable_list)
             self.data_types.append(data_types)
             self.dlc_list.append(dlc)
-
 
     def main_decode_function_gen(self):
         def create_class():
@@ -255,6 +264,7 @@ class FrameHandlerFunctionsGenerator():
                 "" + "\n" + \
                 "        self.next_state = \"{}\"".format(self.next_state_name)
 
+        self.convert_received_data_configuration() # get configuration
 
         create_class()
         create_init_function()
@@ -274,6 +284,41 @@ class FrameHandlerFunctionsGenerator():
         print(self.content_of_convert_received_data_file, file = file)
         self.content_of_convert_received_data_file = ""
 
+    def main_code_function(self):
+        def create_class():
+            self.content_of_convert_send_data_file += \
+                "from threading import Lock\n" + \
+                "\n" + \
+                "\"\"\"Header function\"\"\"\n" + \
+                "from {}.Header import Header_data_code".format(self.import_folder_address) + \
+                "\n\n" + \
+                "\"\"\"Data convert functions\"\"\"\n"
+
+            for name in self.frame_name_list:
+                if "Header" not in name:
+                    string = "from {0}.{1} import {1}_data_code\n".format(self.import_folder_address, name)
+                    self.content_of_convert_send_data_file += string
+
+            self.content_of_convert_send_data_file += \
+                "\n" + \
+                "class {}():\n".format(self.create_class_name) + \
+                "    \"\"\"\n" + \
+                "    We define a state object which provides some utility functions for the\n" + \
+                "    individual states within the state machine.\n" + \
+                "    \"\"\"\n\n"
+
+        self.convert_data_to_send_configuration() # get configuration
+
+        create_class()
+
+        self.prepare_data_to_send_files_storage_folder = "output_create/code_frame_files/" # to delete
+        self.prepare_data_to_send_storage_folder = "output_create/" # to delete
+
+        file = open(self.prepare_data_to_send_storage_folder + self.convert_send_data_file_name, "w")
+        print(self.content_of_convert_send_data_file, file = file)
+        self.content_of_convert_send_data_file = ""
+
+
 if __name__ == "__main__":
 
     g = FrameHandlerFunctionsGenerator()
@@ -283,4 +328,4 @@ if __name__ == "__main__":
     g.frame_data_files_gen()
     #g.second_input_check()
     g.main_decode_function_gen()
-
+    g.main_code_function()
