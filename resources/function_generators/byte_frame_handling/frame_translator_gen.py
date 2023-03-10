@@ -193,10 +193,13 @@ class FrameHandlerFunctionsGenerator():
             self.content_of_convert_received_data_file += "\n"
 
         def create_identify_frames_func():
+            dlc_number = self.frame_name_list.index("Header")
+            header_dlc = self.dlc_list[dlc_number]
+
             self.content_of_convert_received_data_file += \
                 "    def identify_frames(self, frame):" + "\n" + \
                 "        self.Header_data_decode(frame)" + "\n" + \
-                "        return frame[8:]" + "\n" + \
+                "        return frame[{}:]".format(header_dlc) + "\n" + \
                 "" + "\n"
 
         def create_get_data_function():

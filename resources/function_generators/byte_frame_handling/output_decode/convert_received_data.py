@@ -41,9 +41,6 @@ class ConvertReceivedDataBody():
     def init_header_variables(self):
         self.ID = int()
         self.DLC = int()
-        self.reserved0 = int()
-        self.reserved1 = int()
-        self.reserved2 = int()
 
     def init_received_variables(self):
         #TestFrameData variables
@@ -59,7 +56,7 @@ class ConvertReceivedDataBody():
 
     def identify_frames(self, frame):
         self.Header_data_decode(frame)
-        return frame[8:]
+        return frame[2:]
 
     def get_data(self, states_data):
         self.lock.acquire() # lock before read/save data

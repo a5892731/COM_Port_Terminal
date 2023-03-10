@@ -1,9 +1,6 @@
 struct Header
 {
 private:
-    int32_t ID {};
+    int8_t ID {};
     int8_t DLC {};
-    int8_t reserved0 {};
-    int8_t reserved1 {};
-    int8_t reserved2 {};
 };
