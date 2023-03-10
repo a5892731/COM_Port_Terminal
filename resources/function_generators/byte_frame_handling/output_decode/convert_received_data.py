@@ -31,8 +31,8 @@ class ConvertReceivedDataBody():
                           "TestFrameData2": 101,
                          }
         self.FRAMES_DLC = {
-                           "TestFrameData": 22,
-                           "TestFrameData2": 13,
+                           "TestFrameData": 14,
+                           "TestFrameData2": 5,
                           }
 
     def init_system_variables(self):
@@ -45,13 +45,13 @@ class ConvertReceivedDataBody():
     def init_received_variables(self):
         #TestFrameData variables
         self.variable1 = int()
-        self.variable2 = float()
+        self.variable2 = int()
         self.variable3 = float()
         self.variable4 = int()
         self.variable5 = int()
         #TestFrameData2 variables
         self.variable6 = int()
-        self.variable7 = float()
+        self.variable7 = int()
         self.variable8 = int()
 
     def identify_frames(self, frame):

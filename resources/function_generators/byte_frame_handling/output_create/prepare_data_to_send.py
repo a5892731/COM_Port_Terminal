@@ -13,4 +13,26 @@ class PrepareDataToSendBody():
     individual states within the state machine.
     """
 
+    def __init__(self):
+        self.next_state = self.__class__.__name__
+        self.lock = Lock() # threading Lock mechanism
+        """
+        self.lock.acquire() # lock before read/save data
+        self.lock.release() # unlock.
+        """
+
+        self.init_identification_frame_numbers()
+        self.init_send_variables()
+        self.init_system_variables()
+
+    def init_identification_frame_numbers(self):
+        self.FRAMES_ID = {
+                          "TestFrameData": 100,
+                          "TestFrameData2": 101,
+                         }
+        self.FRAMES_DLC = {
+                           "TestFrameData": 14,
+                           "TestFrameData2": 5,
+                          }
+
 

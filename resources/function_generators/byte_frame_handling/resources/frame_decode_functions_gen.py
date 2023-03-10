@@ -127,7 +127,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
             output.append(
                 "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"B\")"
                     .format(variable_name, byte_number, byte_number + 1))
-            byte_number += 1
+            byte_number += 2
             variable_list.append(variable_name)
             data_types.append("int()")
         elif "int16" in line:
@@ -135,7 +135,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
             output.append(
                 "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"B\")"
                     .format(variable_name, byte_number, byte_number + 1))
-            byte_number += 1
+            byte_number += 2
             variable_list.append(variable_name)
             data_types.append("int()")
         elif "int32_t" in line:
@@ -151,7 +151,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
             output.append(
                 "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"B\")"
                     .format(variable_name, byte_number, byte_number + 1))
-            byte_number += 1
+            byte_number += 4
             variable_list.append(variable_name)
             data_types.append("int()")
         elif "float" in line:
@@ -159,7 +159,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
             output.append(
                 "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}d\")"
                     .format(variable_name, byte_number, byte_number + 8, endian_translate(endian)))
-            byte_number += 8
+            byte_number += 4
             variable_list.append(variable_name)
             data_types.append("float()")
         elif "double" in line:
@@ -175,7 +175,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
             output.append(
                 "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"B\")"
                     .format(variable_name, byte_number, byte_number + 1))
-            byte_number += 1
+            byte_number += 8
             variable_list.append(variable_name)
             data_types.append("int()")
         elif "int64" in line:
@@ -183,7 +183,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
             output.append(
                 "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"B\")"
                     .format(variable_name, byte_number, byte_number + 1))
-            byte_number += 1
+            byte_number += 8
             variable_list.append(variable_name)
             data_types.append("int()")
 

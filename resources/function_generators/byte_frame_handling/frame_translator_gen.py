@@ -307,9 +307,50 @@ class FrameHandlerFunctionsGenerator():
                 "    individual states within the state machine.\n" + \
                 "    \"\"\"\n\n"
 
+        def create_init_function():
+            self.content_of_convert_send_data_file += \
+                "    def __init__(self):\n" + \
+                "        self.next_state = self.__class__.__name__\n" + \
+                "        self.lock = Lock() # threading Lock mechanism\n" + \
+                "        \"\"\"\n" + \
+                "        self.lock.acquire() # lock before read/save data\n" + \
+                "        self.lock.release() # unlock.\n" + \
+                "        \"\"\"\n\n" + \
+                "        self.init_identification_frame_numbers()\n" + \
+                "        self.init_send_variables()\n" + \
+                "        self.init_system_variables()" + "\n" + \
+                "" + "\n"
+
+        def create_init_identification_frame_numbers_function():
+            self.content_of_convert_send_data_file += \
+                "    def init_identification_frame_numbers(self):" + "\n" + \
+                "        self.FRAMES_ID = {" + "\n"
+
+            for name in self.FRAMES_ID:
+                self.content_of_convert_send_data_file += \
+                "                          \"{}\": {},\n".format(name, self.FRAMES_ID[name])
+
+            self.content_of_convert_send_data_file += \
+                "                         }" + "\n" + \
+                "        self.FRAMES_DLC = {\n"
+
+            for i in range(len(self.frame_name_list)):
+                if "Header" not in self.frame_name_list[i]:
+
+                    self.content_of_convert_send_data_file += \
+                    "                           \"{}\": {},\n".format(self.frame_name_list[i], self.dlc_list[i])
+
+            self.content_of_convert_send_data_file += \
+                    "                          }" + "\n" + \
+                    "" + "\n"
+
+
+
         self.convert_data_to_send_configuration() # get configuration
 
         create_class()
+        create_init_function()
+        create_init_identification_frame_numbers_function()
 
         self.prepare_data_to_send_files_storage_folder = "output_create/code_frame_files/" # to delete
         self.prepare_data_to_send_storage_folder = "output_create/" # to delete
