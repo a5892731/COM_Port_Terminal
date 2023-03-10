@@ -76,14 +76,55 @@ class PrepareDataToSendBody():
         self.TestFrameData2SendOrd = states_data.TestFrameData2SendOrd
 
         self.lock.release()  # unlock
-    def store_data(self, states_data):
+    def store_data(self, states_data, GUI_data):
         self.lock.acquire()  # lock before read/save data
         #states_data.PrepareDataToSend = self
-        self.lock.release()  # unlock
 
         """system"""
         states_data.TestFrameDataSendOrd = self.TestFrameDataSendOrd
         states_data.TestFrameData2SendOrd = self.TestFrameData2SendOrd
 
+        self.lock.release()  # unlock
+
     def build_frames(self, ID):
-       '''byte frame = Header + data'''
+        '''byte frame = Header + data'''
+        self.ID = ID
+
+        if self.ID == self.FRAMES_ID["TestFrameData"]:
+            self.DLC = self.FRAMES_DLC['TestFrameData']
+            frame_header = self.Heder(endian='little')
+            frame_data = self.TestFrameData(endian='little')
+        elif self.ID == self.FRAMES_ID["TestFrameData2"]:
+            self.DLC = self.FRAMES_DLC['TestFrameData2']
+            frame_header = self.Heder(endian='little')
+            frame_data = self.TestFrameData2(endian='little')
+
+        return frame_header + frame_data
+
+    def run_state(self,  states_data, GUI_data):
+        '''
+        Handle events that are delegated to this State.
+        '''
+        self.get_system_data(states_data, GUI_data)
+
+        self.messages = list() #clear list
+
+        #Tranzition condition:
+        if self.TestFrameDataSendOrd or self.TestFrameData2SendOrd:
+            self.next_state = "SendData"
+        else:
+            self.next_state = "StoreSendData"
+
+        #Prepare frames:
+        if self.TestFrameDataSendOrd == True:
+            self.TestFrameDataSendOrd = False
+            self.store_data(states_data, GUI_data)
+            self.messages.append(self.build_frames(self.FRAMES_ID["TestFrameData"]))
+
+        if self.TestFrameData2SendOrd == True:
+            self.TestFrameData2SendOrd = False
+            self.store_data(states_data, GUI_data)
+            self.messages.append(self.build_frames(self.FRAMES_ID["TestFrameData2"]))
+
+        #Update data:
+        self.store_data(states_data, GUI_data)

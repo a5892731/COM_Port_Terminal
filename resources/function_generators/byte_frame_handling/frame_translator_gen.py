@@ -62,7 +62,8 @@ class FrameHandlerFunctionsGenerator():
     def convert_data_to_send_configuration(self):
         self.import_folder_address = "resources.function_generators.byte_frame_handling.output_create.code_frame_files"
         self.create_class_name = "PrepareDataToSendBody"
-        self.next_state_name = "StoreSendData"
+        self.next_state_name = "SendData"
+        self.alternative_next_state_name = "StoreSendData"
         self.data_storage_class = "states_data"
         self.store_self_source = "states_data.PrepareDataToSend"
 
@@ -414,10 +415,9 @@ class FrameHandlerFunctionsGenerator():
 
         def create_store_data_function():
             self.content_of_convert_send_data_file += \
-                "    def store_data(self, states_data):" + "\n" + \
+                "    def store_data(self, states_data, GUI_data):" + "\n" + \
                 "        self.lock.acquire()  # lock before read/save data" + "\n" + \
                 "        #states_data.{} = self\n".format(self.create_class_name.rstrip("ody").rstrip("B") ) + \
-                "        self.lock.release()  # unlock" + "\n" + \
                 "" + "\n" + "        \"\"\"system\"\"\"" + "\n"
 
             for neme in self.frame_name_list:
@@ -425,12 +425,72 @@ class FrameHandlerFunctionsGenerator():
                     self.content_of_convert_send_data_file += \
                         "        states_data.{0}SendOrd = self.{0}SendOrd\n".format(neme)
 
-            self.content_of_convert_send_data_file += "\n"
+            self.content_of_convert_send_data_file += "\n" + \
+            "        self.lock.release()  # unlock" + "\n\n"
 
         def create_build_frames():
             self.content_of_convert_send_data_file += \
                 "    def build_frames(self, ID):" + "\n" + \
-                "       \'\'\'byte frame = Header + data\'\'\'"
+                "        \'\'\'byte frame = Header + data\'\'\'" + "\n" +\
+                "        self.ID = ID" + '\n\n'
+
+
+
+            condition= "if"
+
+            for name in self.frame_name_list:
+                if "Header" not in name:
+                    self.content_of_convert_send_data_file += \
+                    "        {} self.ID == self.FRAMES_ID[\"{}\"]:\n".format(condition, name) + \
+                    "            self.DLC = self.FRAMES_DLC[\'{}\']".format(name) + "\n" + \
+                    "            frame_header = self.Heder(endian=\'{}\')\n".format(self.endian) + \
+                    "            frame_data = self.{}(endian=\'{}\')\n".format(name, self.endian)
+                    condition = "elif"
+
+            self.content_of_convert_send_data_file += \
+            "\n        return frame_header + frame_data\n\n"
+
+        def create_run_state():
+            self.content_of_convert_send_data_file += \
+                "    def run_state(self,  states_data, GUI_data):" + "\n" + \
+                "        \'\'\'\n" + \
+                "        Handle events that are delegated to this State.\n" + \
+                "        \'\'\'\n" +\
+                "        self.get_system_data(states_data, GUI_data)\n\n" + \
+                "        self.messages = list() #clear list\n\n"
+
+            self.content_of_convert_send_data_file += "        #Tranzition condition:\n"
+            self.content_of_convert_send_data_file += "        if"
+            for name in self.frame_name_list:
+                if "Header" not in name:
+                    self.content_of_convert_send_data_file += \
+                        " self.{}SendOrd or".format(name)
+
+            self.content_of_convert_send_data_file =  self.content_of_convert_send_data_file.rstrip(" or") + ":\n" + \
+            "            self.next_state = \"{}\"\n".format(self.next_state_name) + \
+            "        else:\n" + \
+            "            self.next_state = \"{}\"\n\n".format(self.alternative_next_state_name)
+
+
+            self.content_of_convert_send_data_file += "        #Prepare frames:\n"
+
+            for name in self.frame_name_list:
+                if "Header" not in name:
+                    self.content_of_convert_send_data_file += \
+                    "        if self.{}SendOrd == True:\n".format(name) + \
+                    "            self.{}SendOrd = False\n".format(name) + \
+                    "            self.store_data(states_data, GUI_data)\n" + \
+                    "            self.messages.append(self.build_frames(self.FRAMES_ID[\"{}\"]))\n\n".format(name)
+
+            self.content_of_convert_send_data_file += "        #Update data:\n" + \
+            "        self.store_data(states_data, GUI_data)"
+
+
+
+
+
+
+
 
 
 
@@ -445,6 +505,7 @@ class FrameHandlerFunctionsGenerator():
         create_get_data()
         create_store_data_function()
         create_build_frames()
+        create_run_state()
 
         self.prepare_data_to_send_files_storage_folder = "output_create/code_frame_files/" # to delete
         self.prepare_data_to_send_storage_folder = "output_create/" # to delete
