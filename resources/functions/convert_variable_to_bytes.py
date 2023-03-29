@@ -37,6 +37,8 @@ def convert_variable_to_bytes(value=0, type="int32_t", endian="little"):
 
     if type == "char":
         struct_type = "c"
+    elif type == "bool":
+        struct_type = "?"
     elif type == "int8":
         struct_type = "b"
     elif type == "int8_t":

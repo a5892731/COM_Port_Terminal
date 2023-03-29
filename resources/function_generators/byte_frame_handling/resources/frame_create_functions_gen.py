@@ -99,28 +99,37 @@ def frame_create_functions_gen(open_file, endian, input_folder = "input_frames",
             variable_name = line.rstrip(" {};\n").lstrip("char ")
             data_types.append("str()")
             variable_list.append(variable_name)
-            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"char\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
+
+        elif "bool" in line:
+            variable_name = line.rstrip(" {};\n").lstrip("char ")
+            data_types.append("bool()")
+            variable_list.append(variable_name)
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"bool\", endian=endian)".
+                          format(variable_name, ))
+            return_value.append(variable_name)
+
         elif "int8_t" in line:
             variable_name = line.rstrip(" {};\n").lstrip("int8_t ")
             data_types.append("int()")
             variable_list.append(variable_name)
-            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int8_t\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
         elif "int8" in line:
             variable_name = line.rstrip(" {};\n").lstrip("int8 ")
             data_types.append("int()")
             variable_list.append(variable_name)
-            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int8\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
         elif "int16_t" in line:
             variable_name = line.rstrip(" {};\n").lstrip("int16_t ")
             data_types.append("int()")
             variable_list.append(variable_name)
-            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int16_t\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
         elif "int16" in line:
@@ -128,7 +137,7 @@ def frame_create_functions_gen(open_file, endian, input_folder = "input_frames",
             variable_name = variable_name.lstrip("int16 ")
             data_types.append("int()")
             variable_list.append(variable_name)
-            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int16\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
         elif "int32_t" in line:
@@ -142,14 +151,14 @@ def frame_create_functions_gen(open_file, endian, input_folder = "input_frames",
             variable_name = line.rstrip(" {};\n").lstrip("int32 ")
             data_types.append("int()")
             variable_list.append(variable_name)
-            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"unsigned char\", endian=endian)".
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int32\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
         elif "float" in line:
             variable_name = line.rstrip(" {};\n").lstrip("float ")
             data_types.append("float()")
             variable_list.append(variable_name)
-            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"double\", endian=endian)".
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"float\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
         elif "double" in line:
@@ -163,14 +172,14 @@ def frame_create_functions_gen(open_file, endian, input_folder = "input_frames",
             variable_name = line.rstrip(" {};\n").lstrip("int64_t ")
             variable_list.append(variable_name)
             data_types.append("int()")
-            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int32_t\", endian=endian)".
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int64_t\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
         elif "int64" in line:
             variable_name = line.rstrip(" {};\n").lstrip("int64 ")
             variable_list.append(variable_name)
             data_types.append("int()")
-            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int32_t\", endian=endian)".
+            output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"int64\", endian=endian)".
                           format(variable_name, ))
             return_value.append(variable_name)
 
