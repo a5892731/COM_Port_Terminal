@@ -10,8 +10,8 @@ def Header_data_decode(self, frame):
     };
     """
     try:
-        self.ID = convert_bytes_to_variable(bytes = frame["data"][0:1], data_type = "B")
-        self.DLC = convert_bytes_to_variable(bytes = frame["data"][1:2], data_type = "B")
+        self.ID = convert_bytes_to_variable(bytes = frame["data"][0:1], data_type = "I")
+        self.DLC = convert_bytes_to_variable(bytes = frame["data"][1:2], data_type = "I")
     except TypeError:
         print("Header_data_decode(frame): except TypeError: TypeError: unhashable type: 'slice'")
 

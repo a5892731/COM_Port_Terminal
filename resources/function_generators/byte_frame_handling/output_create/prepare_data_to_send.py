@@ -1,17 +1,18 @@
 from threading import Lock
 
-"""Header function"""
-from resources.function_generators.byte_frame_handling.output_create.code_frame_files.Header import Header_data_code
-
-"""Data convert functions"""
-from resources.function_generators.byte_frame_handling.output_create.code_frame_files.TestFrameData import TestFrameData_data_code
-from resources.function_generators.byte_frame_handling.output_create.code_frame_files.TestFrameData2 import TestFrameData2_data_code
 
 class PrepareDataToSendBody():
     """
     We define a state object which provides some utility functions for the
     individual states within the state machine.
     """
+
+    """Header function"""
+    from resources.function_generators.byte_frame_handling.output_create.code_frame_files.Header import Header_data_code
+
+    """Data convert functions"""
+    from resources.function_generators.byte_frame_handling.output_create.code_frame_files.TestFrameData import TestFrameData_data_code
+    from resources.function_generators.byte_frame_handling.output_create.code_frame_files.TestFrameData2 import TestFrameData2_data_code
 
     def __init__(self):
         self.next_state = self.__class__.__name__
@@ -92,11 +93,11 @@ class PrepareDataToSendBody():
 
         if self.ID == self.FRAMES_ID["TestFrameData"]:
             self.DLC = self.FRAMES_DLC['TestFrameData']
-            frame_header = self.Heder(endian='little')
+            frame_header = self.Header(endian='little')
             frame_data = self.TestFrameData(endian='little')
         elif self.ID == self.FRAMES_ID["TestFrameData2"]:
             self.DLC = self.FRAMES_DLC['TestFrameData2']
-            frame_header = self.Heder(endian='little')
+            frame_header = self.Header(endian='little')
             frame_data = self.TestFrameData2(endian='little')
 
         return frame_header + frame_data
@@ -105,7 +106,7 @@ class PrepareDataToSendBody():
         '''
         Handle events that are delegated to this State.
         '''
-        self.get_system_data(states_data, GUI_data)
+        self.get_data(states_data, GUI_data)
 
         self.messages = list() #clear list
 

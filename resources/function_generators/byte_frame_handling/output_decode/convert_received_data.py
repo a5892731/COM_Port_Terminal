@@ -1,17 +1,18 @@
 from threading import Lock
 
-"""Header function"""
-from resources.function_generators.byte_frame_handling.output_decode.decode_frame_files.Header import Header_data_decode
-
-"""Data convert functions"""
-from resources.function_generators.byte_frame_handling.output_decode.decode_frame_files.TestFrameData import TestFrameData_data_decode
-from resources.function_generators.byte_frame_handling.output_decode.decode_frame_files.TestFrameData2 import TestFrameData2_data_decode
 
 class ConvertReceivedDataBody():
     """
     We define a state object which provides some utility functions for the
     individual states within the state machine.
     """
+
+    """Header function"""
+    from resources.function_generators.byte_frame_handling.output_decode.decode_frame_files.Header import Header_data_decode
+
+    """Data convert functions"""
+    from resources.function_generators.byte_frame_handling.output_decode.decode_frame_files.TestFrameData import TestFrameData_data_decode
+    from resources.function_generators.byte_frame_handling.output_decode.decode_frame_files.TestFrameData2 import TestFrameData2_data_decode
 
     def __init__(self):
         self.next_state = self.__class__.__name__

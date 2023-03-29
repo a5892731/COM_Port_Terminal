@@ -9,8 +9,8 @@ def Header_data_code(self, endian="little"):
         int8_t DLC {};
     };
     """
-    ID = convert_variable_to_bytes(value=self.ID, type ="unsigned char", endian=endian)
-    DLC = convert_variable_to_bytes(value=self.DLC, type ="unsigned char", endian=endian)
+    ID = convert_variable_to_bytes(value=self.ID, type ="int8_t", endian=endian)
+    DLC = convert_variable_to_bytes(value=self.DLC, type ="int8_t", endian=endian)
 
 
     Header = ID + DLC

@@ -113,16 +113,7 @@ class FrameHandlerFunctionsGenerator():
         def create_class():
             self.content_of_convert_received_data_file += \
                 "from threading import Lock\n" + \
-                "\n" + \
-                "\"\"\"Header function\"\"\"\n" + \
-                "from {}.Header import Header_data_decode".format(self.import_folder_address) + \
-                "\n\n" + \
-                "\"\"\"Data convert functions\"\"\"\n"
-
-            for name in self.frame_name_list:
-                if "Header" not in name:
-                    string = "from {0}.{1} import {1}_data_decode\n".format(self.import_folder_address, name)
-                    self.content_of_convert_received_data_file += string
+                "\n"
 
             self.content_of_convert_received_data_file += \
                 "\n" + \
@@ -131,6 +122,19 @@ class FrameHandlerFunctionsGenerator():
                 "    We define a state object which provides some utility functions for the\n" + \
                 "    individual states within the state machine.\n" + \
                 "    \"\"\"\n\n"
+
+            self.content_of_convert_received_data_file += \
+                "    \"\"\"Header function\"\"\"\n" + \
+                "    from {}.Header import Header_data_decode".format(self.import_folder_address) + \
+                "\n\n" + \
+                "    \"\"\"Data convert functions\"\"\"\n"
+
+            for name in self.frame_name_list:
+                if "Header" not in name:
+                    string = "    from {0}.{1} import {1}_data_decode\n".format(self.import_folder_address, name)
+                    self.content_of_convert_received_data_file += string
+
+            self.content_of_convert_received_data_file += "\n"
 
         def create_init_function():
             self.content_of_convert_received_data_file += \
@@ -292,16 +296,7 @@ class FrameHandlerFunctionsGenerator():
         def create_class():
             self.content_of_convert_send_data_file += \
                 "from threading import Lock\n" + \
-                "\n" + \
-                "\"\"\"Header function\"\"\"\n" + \
-                "from {}.Header import Header_data_code".format(self.import_folder_address) + \
-                "\n\n" + \
-                "\"\"\"Data convert functions\"\"\"\n"
-
-            for name in self.frame_name_list:
-                if "Header" not in name:
-                    string = "from {0}.{1} import {1}_data_code\n".format(self.import_folder_address, name)
-                    self.content_of_convert_send_data_file += string
+                "\n"
 
             self.content_of_convert_send_data_file += \
                 "\n" + \
@@ -310,6 +305,19 @@ class FrameHandlerFunctionsGenerator():
                 "    We define a state object which provides some utility functions for the\n" + \
                 "    individual states within the state machine.\n" + \
                 "    \"\"\"\n\n"
+            self.content_of_convert_send_data_file += \
+            "    \"\"\"Header function\"\"\"\n" + \
+            "    from {}.Header import Header_data_code".format(self.import_folder_address) + \
+            "\n\n" + \
+            "    \"\"\"Data convert functions\"\"\"\n"
+
+            for name in self.frame_name_list:
+                if "Header" not in name:
+                    string = "    from {0}.{1} import {1}_data_code\n".format(self.import_folder_address, name)
+                    self.content_of_convert_send_data_file += string
+
+            self.content_of_convert_send_data_file += "\n"
+
 
         def create_init_function():
             self.content_of_convert_send_data_file += \
@@ -443,7 +451,7 @@ class FrameHandlerFunctionsGenerator():
                     self.content_of_convert_send_data_file += \
                     "        {} self.ID == self.FRAMES_ID[\"{}\"]:\n".format(condition, name) + \
                     "            self.DLC = self.FRAMES_DLC[\'{}\']".format(name) + "\n" + \
-                    "            frame_header = self.Heder(endian=\'{}\')\n".format(self.endian) + \
+                    "            frame_header = self.Header(endian=\'{}\')\n".format(self.endian) + \
                     "            frame_data = self.{}(endian=\'{}\')\n".format(name, self.endian)
                     condition = "elif"
 
@@ -456,7 +464,7 @@ class FrameHandlerFunctionsGenerator():
                 "        \'\'\'\n" + \
                 "        Handle events that are delegated to this State.\n" + \
                 "        \'\'\'\n" +\
-                "        self.get_system_data(states_data, GUI_data)\n\n" + \
+                "        self.get_data(states_data, GUI_data)\n\n" + \
                 "        self.messages = list() #clear list\n\n"
 
             self.content_of_convert_send_data_file += "        #Tranzition condition:\n"

@@ -9,8 +9,8 @@ def TestFrameData2_data_code(self, endian="little"):
         double variable8 {};
     };
     """
-    variable6 = convert_variable_to_bytes(value=self.variable6, type ="unsigned char", endian=endian)
-    variable7 = convert_variable_to_bytes(value=self.variable7, type ="unsigned char", endian=endian)
+    variable6 = convert_variable_to_bytes(value=self.variable6, type ="int16_t", endian=endian)
+    variable7 = convert_variable_to_bytes(value=self.variable7, type ="int16", endian=endian)
     variable8 = convert_variable_to_bytes(value=self.variable8, type ="double", endian=endian)
 
 
