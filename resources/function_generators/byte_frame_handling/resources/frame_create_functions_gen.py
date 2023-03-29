@@ -104,7 +104,7 @@ def frame_create_functions_gen(open_file, endian, input_folder = "input_frames",
             return_value.append(variable_name)
 
         elif "bool" in line:
-            variable_name = line.rstrip(" {};\n").lstrip("char ")
+            variable_name = line.rstrip(" {};\n").lstrip("bool ")
             data_types.append("bool()")
             variable_list.append(variable_name)
             output.append("    {0} = convert_variable_to_bytes(value=self.{0}, type =\"bool\", endian=endian)".
