@@ -12,11 +12,11 @@ def TestFrameData_data_decode(self, frame):
     };
     """
     try:
-        self.variable1 = convert_bytes_to_variable(bytes = frame["data"][0:4], data_type = "<I")
-        self.variable2 = convert_bytes_to_variable(bytes = frame["data"][4:8], data_type = "<i")
-        self.variable3 = convert_bytes_to_variable(bytes = frame["data"][8:12], data_type = "<f")
-        self.variable4 = convert_bytes_to_variable(bytes = frame["data"][12:13], data_type = "I")
-        self.variable5 = convert_bytes_to_variable(bytes = frame["data"][13:14], data_type = "i")
+        self.variable1 = convert_bytes_to_variable(bytes = frame[0:4], data_type = "<I")
+        self.variable2 = convert_bytes_to_variable(bytes = frame[4:8], data_type = "<i")
+        self.variable3 = convert_bytes_to_variable(bytes = frame[8:12], data_type = "<f")
+        self.variable4 = convert_bytes_to_variable(bytes = frame[12:13], data_type = "B")
+        self.variable5 = convert_bytes_to_variable(bytes = frame[13:14], data_type = "b")
     except TypeError:
         print("TestFrameData_data_decode(frame): except TypeError: TypeError: unhashable type: 'slice'")
 

@@ -100,7 +100,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
         elif "char" in line:
             variable_name = line.rstrip(" {};\n").lstrip("char ")
             output.append(
-                "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"c\")"
+                "        self.{} = convert_bytes_to_variable(bytes = frame[{}:{}], data_type = \"c\")"
                     .format(variable_name, byte_number, byte_number + 1))
             byte_number += 1
             variable_list.append(variable_name)
@@ -109,7 +109,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
         elif "bool" in line:
             variable_name = line.rstrip(" {};\n").lstrip("bool ")
             output.append(
-                "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"?\")"
+                "        self.{} = convert_bytes_to_variable(bytes = frame[{}:{}], data_type = \"?\")"
                     .format(variable_name, byte_number, byte_number + 1))
             byte_number += 1
             variable_list.append(variable_name)
@@ -119,7 +119,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
         elif "int8_t" in line:
             variable_name = line.rstrip(" {};\n").lstrip("int8_t ")
             output.append(
-                "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"I\")"
+                "        self.{} = convert_bytes_to_variable(bytes = frame[{}:{}], data_type = \"B\")"
                 .format(variable_name, byte_number, byte_number + 1))
             byte_number += 1
             variable_list.append(variable_name)
@@ -128,7 +128,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
             #variable_name = line[9::].rstrip(" {};\n")
             variable_name = line.rstrip(" {};\n").lstrip("int8 ")
             output.append(
-                "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"i\")"
+                "        self.{} = convert_bytes_to_variable(bytes = frame[{}:{}], data_type = \"b\")"
                     .format(variable_name, byte_number, byte_number + 1))
             byte_number += 1
             variable_list.append(variable_name)
@@ -136,7 +136,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
         elif "int16_t" in line:
             variable_name = line.rstrip(" {};\n").lstrip("int16_t ")
             output.append(
-                "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}H\")"
+                "        self.{} = convert_bytes_to_variable(bytes = frame[{}:{}], data_type = \"{}H\")"
                     .format(variable_name, byte_number, byte_number + 2, endian_translate(endian)))
             byte_number += 2
             variable_list.append(variable_name)
@@ -144,7 +144,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
         elif "int16" in line:
             variable_name = line.rstrip(" {};\n").lstrip("int16 ")
             output.append(
-                "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}h\")"
+                "        self.{} = convert_bytes_to_variable(bytes = frame[{}:{}], data_type = \"{}h\")"
                     .format(variable_name, byte_number, byte_number + 2, endian_translate(endian)))
             byte_number += 2
             variable_list.append(variable_name)
@@ -152,7 +152,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
         elif "int32_t" in line:
             variable_name = line.rstrip(" {};\n").lstrip("int32_t ")
             output.append(
-                "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}I\")"
+                "        self.{} = convert_bytes_to_variable(bytes = frame[{}:{}], data_type = \"{}I\")"
                 .format(variable_name, byte_number, byte_number + 4, endian_translate(endian)))
             byte_number += 4
             variable_list.append(variable_name)
@@ -160,7 +160,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
         elif "int32" in line:
             variable_name = line.rstrip(" {};\n").lstrip("int32 ")
             output.append(
-                "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}i\")"
+                "        self.{} = convert_bytes_to_variable(bytes = frame[{}:{}], data_type = \"{}i\")"
                     .format(variable_name, byte_number, byte_number + 4, endian_translate(endian)))
             byte_number += 4
             variable_list.append(variable_name)
@@ -168,7 +168,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
         elif "float" in line:
             variable_name = line.rstrip(" {};\n").lstrip("float ")
             output.append(
-                "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}f\")"
+                "        self.{} = convert_bytes_to_variable(bytes = frame[{}:{}], data_type = \"{}f\")"
                     .format(variable_name, byte_number, byte_number + 4, endian_translate(endian)))
             byte_number += 4
             variable_list.append(variable_name)
@@ -176,7 +176,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
         elif "double" in line:
             variable_name = line.rstrip(" {};\n").lstrip("double ")
             output.append(
-                "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}d\")"
+                "        self.{} = convert_bytes_to_variable(bytes = frame[{}:{}], data_type = \"{}d\")"
                 .format(variable_name, byte_number, byte_number + 8, endian_translate(endian)))
             byte_number += 8
             variable_list.append(variable_name)
@@ -184,7 +184,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
         elif "int64_t" in line:
             variable_name = line.rstrip(" {};\n").lstrip("int64_t ")
             output.append(
-                "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}Q\")"
+                "        self.{} = convert_bytes_to_variable(bytes = frame[{}:{}], data_type = \"{}Q\")"
                     .format(variable_name, byte_number, byte_number + 8, endian_translate(endian)))
             byte_number += 8
             variable_list.append(variable_name)
@@ -192,7 +192,7 @@ def frame_decode_functions_gen(open_file, endian, input_folder = "input_frames",
         elif "int64" in line:
             variable_name = line.rstrip(" {};\n").lstrip("int64 ")
             output.append(
-                "        self.{} = convert_bytes_to_variable(bytes = frame[\"data\"][{}:{}], data_type = \"{}q}\")"
+                "        self.{} = convert_bytes_to_variable(bytes = frame[{}:{}], data_type = \"{}q}\")"
                     .format(variable_name, byte_number, byte_number + 8, endian_translate(endian)))
             byte_number += 8
             variable_list.append(variable_name)
